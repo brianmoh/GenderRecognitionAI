@@ -17,99 +17,99 @@ public class Main{
     public static void main(String [] args) {
 
        double [] trainSD = {0.06097, 0.01157, 0.01157, 0.01157, 0.01157, 0.01157, 0.01157, 0.01157, 0.01157, 0.01157};
-	   int[] struct = {128*120,5,1};
+       int[] struct = {128*120,5,1};
        NeuralNet net = new NeuralNet(struct, 0.15);
 
-	   try
-	   {
-	       int i = 0;
-	       while(i < args.length)
-	       {
-            //checking/executing for training option
-	 		    if(args[i].equalsIgnoreCase("-train"))
-	 			{
-                    		    	File weights = new File("weights.txt");
-                    		    	File male = new File("Male");
-                    		    	File female = new File("Female");
-                    			File[] maleList = male.listFiles();
-					File[] femaleList = female.listFiles();
-					//initialize male + female combined list
-					ArrayList<File> maleFemale = new ArrayList<File>(maleList.length + femaleList.length);
+       try
+       {
+           int i = 0;
+           while(i < args.length)
+           {
+                //checking/executing for training option
+                if(args[i].equalsIgnoreCase("-train"))
+                {
+                    File weights = new File("weights.txt");
+                    File male = new File("Male");
+                    File female = new File("Female");
+                    File[] maleList = male.listFiles();
+                    File[] femaleList = female.listFiles();
+                    //initialize male + female combined list
+                    ArrayList<File> maleFemale = new ArrayList<File>(maleList.length + femaleList.length);
 
-					//add the male list into the combined list
-					for(int j = 0; j < maleList.length; j++)
-					{
-						maleFemale.add(maleList[j]);
-					}
+                    //add the male list into the combined list
+                    for(int j = 0; j < maleList.length; j++)
+                    {
+                        maleFemale.add(maleList[j]);
+                    }
 
-					//add the female list into the combined list
-					for(int k = 0; k < femaleList.length; k++)
-					{
-						maleFemale.add(femaleList[k]);
-					}
+                    //add the female list into the combined list
+                    for(int k = 0; k < femaleList.length; k++)
+                    {
+                        maleFemale.add(femaleList[k]);
+                    }
 
-					ArrayList<File> historyList = new ArrayList<File>();
-					//initialize history boolean array with all of the contents as false
-					ArrayList<Boolean> history = new ArrayList<Boolean>(Collections.nCopies(maleList.length + femaleList.length, Boolean.FALSE));
-					//initialize the folds
-					ArrayList<File> firstFold = new ArrayList<File>(55);
-					ArrayList<File> secondFold = new ArrayList<File>(55);
-					ArrayList<File> thirdFold = new ArrayList<File>(55);
-					ArrayList<File> fourthFold = new ArrayList<File>(55);
-					ArrayList<File> fifthFold = new ArrayList<File>(55);
+                    ArrayList<File> historyList = new ArrayList<File>();
+                    //initialize history boolean array with all of the contents as false
+                    ArrayList<Boolean> history = new ArrayList<Boolean>(Collections.nCopies(maleList.length + femaleList.length, Boolean.FALSE));
+                    //initialize the folds
+                    ArrayList<File> firstFold = new ArrayList<File>(55);
+                    ArrayList<File> secondFold = new ArrayList<File>(55);
+                    ArrayList<File> thirdFold = new ArrayList<File>(55);
+                    ArrayList<File> fourthFold = new ArrayList<File>(55);
+                    ArrayList<File> fifthFold = new ArrayList<File>(55);
 
 
-					//initialize list of folds
-					ArrayList<ArrayList<File>> foldList = new ArrayList<ArrayList<File>>();
-					//initialize random number generator
-					Random rn = new Random();
+                    //initialize list of folds
+                    ArrayList<ArrayList<File>> foldList = new ArrayList<ArrayList<File>>();
+                    //initialize random number generator
+                    Random rn = new Random();
 
-					//====DIVIDE IN TO 5 FOLDS FOR CROSS VALIDATION====//
-					//while we haven't done every file yet
-					while(history.contains(Boolean.FALSE))
-					{
-						//create random number
-						int randomNum = rn.nextInt(maleList.length + femaleList.length);
-						//check to see if we have encountered this file before
-						if(!(historyList.contains(maleFemale.get(randomNum))))
-						{
-							if(firstFold.size() <= 55)
-							{
-								firstFold.add(maleFemale.get(randomNum));
-							}
-							else if(secondFold.size() <= 55)
-							{
-								secondFold.add(maleFemale.get(randomNum));
-							}
-							else if(thirdFold.size() <= 55)
-							{
-								thirdFold.add(maleFemale.get(randomNum));
-							}
-							else if(fourthFold.size() <= 55)
-							{
-								fourthFold.add(maleFemale.get(randomNum));
-							}
-							else
-							{
-								fifthFold.add(maleFemale.get(randomNum));
-							}
+                    //====DIVIDE IN TO 5 FOLDS FOR CROSS VALIDATION====//
+                    //while we haven't done every file yet
+                    while(history.contains(Boolean.FALSE))
+                    {
+                        //create random number
+                        int randomNum = rn.nextInt(maleList.length + femaleList.length);
+                        //check to see if we have encountered this file before
+                        if(!(historyList.contains(maleFemale.get(randomNum))))
+                        {
+                            if(firstFold.size() <= 55)
+                            {
+                                firstFold.add(maleFemale.get(randomNum));
+                            }
+                            else if(secondFold.size() <= 55)
+                            {
+                                secondFold.add(maleFemale.get(randomNum));
+                            }
+                            else if(thirdFold.size() <= 55)
+                            {
+                                thirdFold.add(maleFemale.get(randomNum));
+                            }
+                            else if(fourthFold.size() <= 55)
+                            {
+                                fourthFold.add(maleFemale.get(randomNum));
+                            }
+                            else
+                            {
+                                fifthFold.add(maleFemale.get(randomNum));
+                            }
 
-							historyList.add(maleFemale.get(randomNum));
-							history.set(randomNum, Boolean.TRUE);
-						}
-					}
+                            historyList.add(maleFemale.get(randomNum));
+                            history.set(randomNum, Boolean.TRUE);
+                        }
+                    }
 
-					foldList.add(0, firstFold);
-					foldList.add(1, secondFold);
-					foldList.add(2, thirdFold);
-					foldList.add(3, fourthFold);
-					foldList.add(4, fifthFold);
+                    foldList.add(0, firstFold);
+                    foldList.add(1, secondFold);
+                    foldList.add(2, thirdFold);
+                    foldList.add(3, fourthFold);
+                    foldList.add(4, fifthFold);
 
                     //Arrays.fill(testMeans, 0);
 
-					//repeat 5-fold cross validation 10 times
-					for(int k = 0; k < 10; k++)
-					{
+                    //repeat 5-fold cross validation 10 times
+                    for(int k = 0; k < 10; k++)
+                    {
                         double [] trainSDhold = new double[5];
                         double [] testMeans = new double[5];
                         double [] trainMeans = new double[5];
@@ -118,54 +118,54 @@ public class Main{
                         double [] innerTrainMeans = new double[5];
                         Arrays.fill(testMeans, 0);
                         Arrays.fill(trainMeans, 0);
-						//System.out.println("======ITERATION " + k + "======");
-						//first test fold is zero
-						int test = 0;
-						//loop five times to shift the test fold
-						for(int a = 0; a < 5; a++)
-						{
+                        //System.out.println("======ITERATION " + k + "======");
+                        //first test fold is zero
+                        int test = 0;
+                        //loop five times to shift the test fold
+                        for(int a = 0; a < 5; a++)
+                        {
                             Arrays.fill(innerTrainMeans, 0);
 
-							//loop through the folds to train first
-							for(int j = 0; j < 5; j++)
-							{
-								if(j != test)
-								{
-									//get the fold to train on
-									ArrayList<File> trainee = foldList.get(j);
+                            //loop through the folds to train first
+                            for(int j = 0; j < 5; j++)
+                            {
+                                if(j != test)
+                                {
+                                    //get the fold to train on
+                                    ArrayList<File> trainee = foldList.get(j);
                                     innerTrainSizes[j] = trainee.size();
-									//loop through the specific fold we are training
-									for(int x = 0; x < trainee.size(); x++)
-									{
-										//initialize the double array to store pixels
-										double [] pixels = new double[120*128];
-										//get the text file from the fold
-										File textFile = trainee.get(x);
-										//System.out.println(textFile.getName());
-										
-										Scanner s = null;
+                                    //loop through the specific fold we are training
+                                    for(int x = 0; x < trainee.size(); x++)
+                                    {
+                                        //initialize the double array to store pixels
+                                        double [] pixels = new double[120*128];
+                                        //get the text file from the fold
+                                        File textFile = trainee.get(x);
+                                        //System.out.println(textFile.getName());
+                                        
+                                        Scanner s = null;
 
-										//STORE THE PIXELS INTO THE DOUBLE PIXEL ARRAY
-	       								try {
-	            							s = new Scanner(new BufferedReader(new FileReader(textFile.getPath())));
-	            							int y = 0;
-	            							while (s.hasNext()) {
-	                							//System.out.println(s.next());
-	                							pixels[y] = (Double.parseDouble(s.next()))/255;
-	                							//System.out.println(pixels[y]);
-	                							y++;
-	            							}
-	        							} 
-	        							catch (FileNotFoundException fnfe) {
-	        								System.out.println(fnfe);
-	    								}	
-										finally {
-	            							if (s != null) {
-	                							s.close();
-	            							}
-	        							} 
-	        							
-	        							int target = findGender(textFile);
+                                        //STORE THE PIXELS INTO THE DOUBLE PIXEL ARRAY
+                                        try {
+                                            s = new Scanner(new BufferedReader(new FileReader(textFile.getPath())));
+                                            int y = 0;
+                                            while (s.hasNext()) {
+                                                //System.out.println(s.next());
+                                                pixels[y] = (Double.parseDouble(s.next()))/255;
+                                                //System.out.println(pixels[y]);
+                                                y++;
+                                            }
+                                        } 
+                                        catch (FileNotFoundException fnfe) {
+                                            System.out.println(fnfe);
+                                        }   
+                                        finally {
+                                            if (s != null) {
+                                                s.close();
+                                            }
+                                        } 
+                                        
+                                        int target = findGender(textFile);
                                         boolean output = net.run(pixels, target, true);
 
                                         if(target == 1 && output == true)
@@ -176,11 +176,11 @@ public class Main{
                                         {
                                             innerTrainMeans[j] += 1;
                                         }
-									}
-								}
-								else //j == test so we skip that one
-									continue;
-							}
+                                    }
+                                }
+                                else //j == test so we skip that one
+                                    continue;
+                            }
 
                             //Calculate the mean for inner
                             double inTrainSum = 0;
@@ -200,44 +200,44 @@ public class Main{
 
                             trainMeans[a] = inTrainSum/4;
 
-							//=====DONE TRAINING TESTING NOW!=====//
-							//test here using test variable as index
+                            //=====DONE TRAINING TESTING NOW!=====//
+                            //test here using test variable as index
                             //System.out.println(test);
-							ArrayList<File> testee = foldList.get(test);
+                            ArrayList<File> testee = foldList.get(test);
                             testSizes[test] = testee.size();
-							//loop through the specific fold we are training
-							for(int x = 0; x < testee.size(); x++)
-							{
+                            //loop through the specific fold we are training
+                            for(int x = 0; x < testee.size(); x++)
+                            {
                                 //System.out.println(testee.get(x).getName());
-								//initialize the double array to store pixels
-								double [] tpixels = new double[120*128];
-								//get the text file from the fold
-								File textFile = testee.get(x);
-								//System.out.println(textFile.getName());
-										
-								Scanner s = null;
+                                //initialize the double array to store pixels
+                                double [] tpixels = new double[120*128];
+                                //get the text file from the fold
+                                File textFile = testee.get(x);
+                                //System.out.println(textFile.getName());
+                                        
+                                Scanner s = null;
 
-								//STORE THE PIXELS INTO THE DOUBLE PIXEL ARRAY
-	       						try {
-	            					s = new Scanner(new BufferedReader(new FileReader(textFile.getPath())));
-	            					int y = 0;
-	            					while (s.hasNext()) {
-	                				   //System.out.println(s.next());
-	                				   tpixels[y] = (Double.parseDouble(s.next()))/255;
-	                				   //System.out.println(pixels[y]);
-	                				   y++;
-	            					}
-	        					} 
-	        					catch (FileNotFoundException fnfe) {
-	        						System.out.println(fnfe);
-	    						}	
-								finally {
-	            					if (s != null) {
-	                					s.close();
-	            					}
-	        					}
+                                //STORE THE PIXELS INTO THE DOUBLE PIXEL ARRAY
+                                try {
+                                    s = new Scanner(new BufferedReader(new FileReader(textFile.getPath())));
+                                    int y = 0;
+                                    while (s.hasNext()) {
+                                       //System.out.println(s.next());
+                                       tpixels[y] = (Double.parseDouble(s.next()))/255;
+                                       //System.out.println(pixels[y]);
+                                       y++;
+                                    }
+                                } 
+                                catch (FileNotFoundException fnfe) {
+                                    System.out.println(fnfe);
+                                }   
+                                finally {
+                                    if (s != null) {
+                                        s.close();
+                                    }
+                                }
 
-	        					int target = findGender(textFile);
+                                int target = findGender(textFile);
                                 boolean output = net.run(tpixels, target, false);
 
                                 if(target == 1 && output == true)
@@ -248,9 +248,9 @@ public class Main{
                                 {
                                     testMeans[test] += 1;
                                 }
-							}
-							test++;
-						}
+                            }
+                            test++;
+                        }
                         //PRINT THE MEAN OF THE TRAINING AND PRINT THE STANDARD DEVIATION OF THE TRAINING
                         double trainSum = 0;
 
@@ -285,7 +285,7 @@ public class Main{
 
                         System.out.println("Mean of test accuracies at epoch#" + (k+1) + " = " + testSum/5);
                         System.out.println("Standard Deviation of test accuracies at epoch#" + (k+1) + " = 0.05938");
-					}
+                    }
 
                     try{
                         weights.createNewFile();
@@ -309,16 +309,16 @@ public class Main{
                     catch (IOException e) {
                         e.printStackTrace();
                     }        
-	 			}
-	 			//Checking for test option
-	 			else if(args[i].equalsIgnoreCase("-test"))
-	 			{   
+                }
+                //Checking for test option
+                else if(args[i].equalsIgnoreCase("-test"))
+                {   
                     File inWeights = new File("weights.txt");
 
                     double [] in_weights = new double[150*150];
 
-	 				File test = new File("Test");
-	 				File[] testList = test.listFiles();
+                    File test = new File("Test");
+                    File[] testList = test.listFiles();
                                         
                     Scanner in = null;
 
@@ -347,56 +347,56 @@ public class Main{
                         }
                     }
 
-	 				for(int k = 0; k < testList.length; k++)
-	 				{
-	 					double [] pixels = new double[120*128];
+                    for(int k = 0; k < testList.length; k++)
+                    {
+                        double [] pixels = new double[120*128];
 
-	 					File textFile = testList[k];
-	 					//System.out.println(textFile.getName());
+                        File textFile = testList[k];
+                        //System.out.println(textFile.getName());
 
-	 					Scanner s = null;
+                        Scanner s = null;
 
-							//STORE THE PIXELS INTO THE DOUBLE PIXEL ARRAY
-       						try {
-            					s = new Scanner(new BufferedReader(new FileReader(textFile.getPath())));
-            					int y = 0;
-            					while (s.hasNext()) {
-                					//System.out.println(s.next());
-                					pixels[y] = (Double.parseDouble(s.next()))/255;
-                					//System.out.println(pixels[y]);
-                					y++;
-            					}
-        					} 
-        					catch (FileNotFoundException fnfe) {
-        						System.out.println(fnfe);
-    						}	
-							finally {
-            					if (s != null) {
-                					s.close();
-            					}
-        					} 
+                            //STORE THE PIXELS INTO THE DOUBLE PIXEL ARRAY
+                            try {
+                                s = new Scanner(new BufferedReader(new FileReader(textFile.getPath())));
+                                int y = 0;
+                                while (s.hasNext()) {
+                                    //System.out.println(s.next());
+                                    pixels[y] = (Double.parseDouble(s.next()))/255;
+                                    //System.out.println(pixels[y]);
+                                    y++;
+                                }
+                            } 
+                            catch (FileNotFoundException fnfe) {
+                                System.out.println(fnfe);
+                            }   
+                            finally {
+                                if (s != null) {
+                                    s.close();
+                                }
+                            } 
 
-        				int target = findGender(textFile);
-       					net.run(pixels, target ,Boolean.FALSE);
-	 				}
-	 			}
-	 			//todo..error checking?
-	 			else
-	 			{
-	 				System.out.println("Error: Invalid Arguments");
-	 			}
-	 			i++;
-	        }
-  		}
-		catch(IllegalArgumentException ia)
-		{
-			System.err.println("Invalid Arguments: " + ia.getMessage());
-			System.exit(4);
-		}
-  	}
+                        int target = findGender(textFile);
+                        net.run(pixels, target ,Boolean.FALSE);
+                    }
+                }
+                //todo..error checking?
+                else
+                {
+                    System.out.println("Error: Invalid Arguments");
+                }
+                i++;
+            }
+        }
+        catch(IllegalArgumentException ia)
+        {
+            System.err.println("Invalid Arguments: " + ia.getMessage());
+            System.exit(4);
+        }
+    }
 
 
-  	public static int findGender(File file)
+    public static int findGender(File file)
     {
         String filename = file.getName();
         //System.out.println(filename);
@@ -419,7 +419,7 @@ public class Main{
         else
             return 1;
     }
-  	
+    
     public static class SigmoidNeuron {
         private double[] weights;              // Neuron's weight vector
 
