@@ -28,10 +28,10 @@ public class Main{
             //checking/executing for training option
 	 		    if(args[i].equalsIgnoreCase("-train"))
 	 			{
-                    File weights = new File("weights.txt");
-                    File male = new File("Male");
-                    File female = new File("Female");
-                    File[] maleList = male.listFiles();
+                    		    	File weights = new File("weights.txt");
+                    		    	File male = new File("Male");
+                    		    	File female = new File("Female");
+                    			File[] maleList = male.listFiles();
 					File[] femaleList = female.listFiles();
 					//initialize male + female combined list
 					ArrayList<File> maleFemale = new ArrayList<File>(maleList.length + femaleList.length);
